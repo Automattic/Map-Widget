@@ -49,7 +49,7 @@ class cftp_map_widget_settings {
 
 	function plugin_section_text() {
 		?>
-		<p>API keys can be gotten from Google via <a href="https://code.google.com/apis/console/?noredirect">https://code.google.com/apis/console/?noredirect</a></p><?php
+		<p>API keys can be gotten from Google via <a href="https://code.google.com/apis/console/?noredirect">https://code.google.com/apis/console/?noredirect</a>. You only need an API key if you require a larger request limit. For small sites, it's safe to leave the API key fields blank</em></p><?php
 		//echo '<p>Main description of this section here.</p>';
 	}
 

@@ -64,33 +64,25 @@ class cftp_map_widget extends WP_Widget {
 			if ( isset( $instance[ 'lat' ] ) ) {
 				$lat = $instance[ 'lat' ];
 			}
-			/*?>
-			<p>
-				<label for="<?php echo $this->get_field_id( 'lat' ); ?>"><?php _e( 'Latitude:' ); ?></label>
-				*/ ?><input class="widefat maplat" id="<?php echo $this->get_field_id( 'lat' ); ?>" name="<?php echo $this->get_field_name( 'lat' ); ?>" type="hidden" value="<?php echo esc_attr( $lat ); ?>" />
+			?>
+			<input class="widefat maplat" id="<?php echo $this->get_field_id( 'lat' ); ?>" name="<?php echo $this->get_field_name( 'lat' ); ?>" type="hidden" value="<?php echo esc_attr( $lat ); ?>" />
 			<?php /*</p>
 			<?php */
 			$long = 0;
 			if ( isset( $instance[ 'long' ] ) ) {
 				$long = $instance[ 'long' ];
 			}
-			/*?>
-			<p>
-				<label for="<?php echo $this->get_field_id( 'long' ); ?>"><?php _e( 'Longitude:' ); ?></label>
-				*/ ?><input class="widefat maplong" id="<?php echo $this->get_field_id( 'long' ); ?>" name="<?php echo $this->get_field_name( 'long' ); ?>" type="hidden" value="<?php echo esc_attr( $long ); ?>" />
-			<?php /*</p>
-			<?php */
+			?>
+			<input class="widefat maplong" id="<?php echo $this->get_field_id( 'long' ); ?>" name="<?php echo $this->get_field_name( 'long' ); ?>" type="hidden" value="<?php echo esc_attr( $long ); ?>" />
+			<?php
 
 			$zoom = 10;
 			if ( isset( $instance[ 'zoom' ] ) ) {
 				$zoom = $instance[ 'zoom' ];
 			}
-			/*?>
-			<p>
-				<label for="<?php echo $this->get_field_id( 'zoom' ); ?>"><?php _e( 'Zoom:' ); ?></label>
-				*/ ?><input class="widefat mapzoom" id="<?php echo $this->get_field_id( 'zoom' ); ?>" name="<?php echo $this->get_field_name( 'zoom' ); ?>" type="hidden" value="<?php echo esc_attr( $zoom ); ?>" />
-			<?php /*</p>
-			<?php */
+			?>
+			<input class="widefat mapzoom" id="<?php echo $this->get_field_id( 'zoom' ); ?>" name="<?php echo $this->get_field_name( 'zoom' ); ?>" type="hidden" value="<?php echo esc_attr( $zoom ); ?>" />
+			<?php
 			$marker = 'on';
 			if ( isset( $instance[ 'marker' ] ) ) {
 				$marker = $instance[ 'marker' ];
@@ -102,8 +94,15 @@ class cftp_map_widget extends WP_Widget {
 				<label for="<?php echo $this->get_field_id( 'marker' ); ?>"><?php _e( 'Show Marker:' ); ?></label>
 				<input id="<?php echo $this->get_field_id( 'marker' ); ?>" name="<?php echo $this->get_field_name( 'marker' ); ?>" type="checkbox" <?php checked( $marker, 'on' ); ?> />
 			</p>
+			<div class="geocoding">
+				<label for="<?php echo $this->get_field_id( 'geocoder' ); ?>">Search for a Location</label>
+				<input id="<?php echo $this->get_field_id( 'geocoder' ); ?>" type="text" class="geocoderinput widefat"/>
+				<div class="geocoder_results">
+				</div>
+			</div>
 
-			<style>.cftp_map_widget_container img { max-width:none;} </style>
+
+			<style>.cftp_map_widget_container img { max-width:none;} .geocoder_results { border: 1px solid #eee;} .geocoder_results a { cursor: pointer; display:block; padding:5px; }  </style>
 			<div style=" margin-bottom:1em; width: 400px; height:400px;" class="cftp_map_widget_container"></div>
 		</div>
 		<?php
