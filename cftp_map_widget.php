@@ -66,8 +66,7 @@ class cftp_map_widget extends WP_Widget {
 			}
 			?>
 			<input class="widefat maplat" id="<?php echo $this->get_field_id( 'lat' ); ?>" name="<?php echo $this->get_field_name( 'lat' ); ?>" type="hidden" value="<?php echo esc_attr( $lat ); ?>" />
-			<?php /*</p>
-			<?php */
+			<?php
 			$long = 0;
 			if ( isset( $instance[ 'long' ] ) ) {
 				$long = $instance[ 'long' ];
@@ -95,7 +94,7 @@ class cftp_map_widget extends WP_Widget {
 				<input id="<?php echo $this->get_field_id( 'marker' ); ?>" name="<?php echo $this->get_field_name( 'marker' ); ?>" type="checkbox" <?php checked( $marker, 'on' ); ?> />
 			</p>
 			<div class="geocoding">
-				<label for="<?php echo $this->get_field_id( 'geocoder' ); ?>">Search for a Location</label>
+				<label for="<?php echo $this->get_field_id( 'geocoder' ); ?>">Search for a Location, or enter a position ( Latitude, Longitude )</label>
 				<input id="<?php echo $this->get_field_id( 'geocoder' ); ?>" type="text" class="geocoderinput widefat"/>
 				<div class="geocoder_results">
 				</div>
