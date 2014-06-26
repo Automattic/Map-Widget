@@ -60,18 +60,28 @@ function MapWidget( element ) {
 	this.geoResults = geoResults;
 
 	geoInput.on( 'change', jQuery.proxy( this.geocoder_changed, this ) );
-	geoInput.on( 'keypress', jQuery.proxy( this.geocoder_changed, this ) );
+	geoInput.on( 'keyup', jQuery.proxy( this.geocoder_changed, this ) );
 }
 
-MapWidget.prototype.geocoder_changed = function () {
+MapWidget.prototype.geocoder_changed = function ( event ) {
 	var search = this.geoInput.val();
 	var geocoder = new google.maps.Geocoder();
+
 	//search is a string, input by user
-	geocoder.geocode({ 'address' : search }, jQuery.proxy( this.geocoder_results, this ) );
+	geocoder.geocode({
+		'address' : search
+	}, jQuery.proxy( function( results, status ) {
+		var search2 = this.geoInput.val();
+		if ( search2 == search ) {
+			var func = jQuery.proxy( this.geocoder_results, this );
+			func( results, status );
+		} else {
+			console.log( search2 + ' != ' + search );
+		}
+	}, this ) );
 }
 
 MapWidget.prototype.geocoder_results = function ( results, status ) {
-
 	var geoResults = this.geoResults;
 	geoResults.empty();
 	if(status == "ZERO_RESULTS") {
