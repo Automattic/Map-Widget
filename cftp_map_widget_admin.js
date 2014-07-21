@@ -23,6 +23,7 @@ MapWidgets.prototype.initMaps = function( array ) {
 
 function MapWidget( element ) {
 	var e = jQuery( element );
+	var titleel = e.parent().parent().parent().parent().children( '.widget-top' ).first();
 	e.removeClass('unprocessed');
 	this.parent = e.parent();
 	this.element = element;
@@ -34,7 +35,7 @@ function MapWidget( element ) {
 
 	var mlat = this.latInput.val();
 	var mlong = this.longInput.val();
-	var zoom = this.getZoom();//el.data('zoom');
+	var zoom = this.getZoom();
 	var latlng = new google.maps.LatLng( mlat, mlong );
 	var mapOptions = {
 		center: latlng,
@@ -61,6 +62,13 @@ function MapWidget( element ) {
 
 	geoInput.on( 'change', jQuery.proxy( this.geocoder_changed, this ) );
 	geoInput.on( 'keyup', jQuery.proxy( this.geocoder_changed, this ) );
+
+	titleel.on( 'click', jQuery.proxy( this.resizeMap, this ) );
+}
+
+MapWidget.prototype.resizeMap = function ( event ) {
+	google.maps.event.trigger( this.map, 'resize' );
+	this.map.setZoom( this.map.getZoom() );
 }
 
 MapWidget.prototype.geocoder_changed = function ( event ) {
