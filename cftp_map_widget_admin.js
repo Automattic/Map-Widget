@@ -129,8 +129,8 @@ MapWidget.prototype.geocoder_results = function ( results, status ) {
 MapWidget.prototype.processGeoCoderResult = function ( result ) {
 	var pos = result.geometry.location;
 	var el = jQuery( '<a>'+result.formatted_address+'</a>' );
-	el.data( 'lat', pos.k );
-	el.data( 'long', pos.A );
+	el.data( 'lat', pos.lat() );
+	el.data( 'lng', pos.lng() );
 	el.click( jQuery.proxy( this.onGeoCoderResultClick, this ) );
 	this.geoResults.append( el );
 }
@@ -142,14 +142,14 @@ MapWidget.prototype.onGeoCoderResultClick = function ( event ) {
 	var target = event.target || event.srcElement;
 	target = jQuery( target );
 	var lat = target.data( 'lat' );
-	var long = target.data( 'long' );
+	var lng = target.data( 'lng' );
 
-	this.setPosition( lat, long );
+	this.setPosition( lat, lng );
 }
 
-MapWidget.prototype.setPosition = function ( lat, long ) {
+MapWidget.prototype.setPosition = function ( lat, lng ) {
 	this.idle = false;
-	var position = new google.maps.LatLng( lat, long );
+	var position = new google.maps.LatLng( lat, lng );
 	this.marker.setMap( null );
 	this.setMarkerPosition( position );
 	this.map.panTo( position );
