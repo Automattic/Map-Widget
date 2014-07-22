@@ -34,7 +34,6 @@ function MapWidget( element ) {
 	this.longInput = this.jqelement.find('.maplong').first();
 	var mdiv = this.jqelement.find('.cftp_map_widget_container').first();
 	this.mapDiv = mdiv;
-	mdiv.on( 'shown', jQuery.proxy( this.setupMap, this ) );
 
 	if ( this.mapDiv.is(':visible') ) {
 		this.setupMap();
@@ -113,7 +112,7 @@ MapWidget.prototype.geocoder_changed = function ( event ) {
 MapWidget.prototype.geocoder_results = function ( results, status ) {
 	var geoResults = this.geoResults;
 	geoResults.empty();
-	if(status == "ZERO_RESULTS") {
+	if ( ( status == "ZERO_RESULTS" ) || ( results == null ) ) {
 		geoResults.append('<p>None Found</p>');
 	} else {
 		results = results.slice( 0, 6 );
@@ -141,8 +140,10 @@ MapWidget.prototype.onGeoCoderResultClick = function ( event ) {
 
 MapWidget.prototype.setPosition = function ( lat, long ) {
 	var position = new google.maps.LatLng( lat, long );
+	this.marker.setMap( null );
 	this.setMarkerPosition( position );
-	this.map.panTo( position );
+	this.map.setCenter( position );
+	this.marker.setMap( this.map );
 }
 
 MapWidget.prototype.setMarkerPosition = function ( position ) {
