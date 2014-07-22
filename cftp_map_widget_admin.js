@@ -22,38 +22,22 @@ MapWidgets.prototype.initMaps = function( array ) {
 }
 
 function MapWidget( element ) {
+	this.shown = false;
 	var e = jQuery( element );
-	var titleel = e.parent().parent().parent().parent().children( '.widget-top' ).first();
 	e.removeClass('unprocessed');
+	var titleel = e.parent().parent().parent().parent().children( '.widget-top' ).first();
 	this.parent = e.parent();
 	this.element = element;
-	this.zoomInput = this.parent.find('.mapzoom').first();
-	this.latInput = this.parent.find('.maplat').first();
-	this.longInput = this.parent.find('.maplong').first();
-	var mdiv = this.parent.find('.cftp_map_widget_container').first();
+	this.jqelement = e;
+	this.zoomInput = this.jqelement.find('.mapzoom').first();
+	this.latInput = this.jqelement.find('.maplat').first();
+	this.longInput = this.jqelement.find('.maplong').first();
+	var mdiv = this.jqelement.find('.cftp_map_widget_container').first();
 	this.mapDiv = mdiv;
+	mdiv.on( 'shown', jQuery.proxy( this.setupMap, this ) );
 
-	var mlat = this.latInput.val();
-	var mlong = this.longInput.val();
-	var zoom = this.getZoom();
-	var latlng = new google.maps.LatLng( mlat, mlong );
-	var mapOptions = {
-		center: latlng,
-		zoom: Number( zoom ),
-		zoomControl: true,
-		panControl: false
-	};
-	this.map = new google.maps.Map( mdiv.get(0), mapOptions );
-	var mmarker = true;
-	if ( mmarker == true ) {
-		var marker = new google.maps.Marker( {
-			position: latlng,
-			map: this.map
-		});
-		this.marker = marker;
-		google.maps.event.addListener( this.map, 'center_changed', jQuery.proxy( this.center_changed, this ) );
-		google.maps.event.addListener( this.map, 'dragend', jQuery.proxy( this.dragend, this ) );
-		google.maps.event.addListener( this.map, 'zoom_changed', jQuery.proxy( this.zoom_changed, this ) );
+	if ( this.mapDiv.is(':visible') ) {
+		this.setupMap();
 	}
 	var geoInput = e.find('.geocoderinput');
 	var geoResults = e.find('.geocoder_results');
@@ -63,8 +47,45 @@ function MapWidget( element ) {
 	geoInput.on( 'change', jQuery.proxy( this.geocoder_changed, this ) );
 	geoInput.on( 'keyup', jQuery.proxy( this.geocoder_changed, this ) );
 
-	titleel.on( 'click', jQuery.proxy( this.resizeMap, this ) );
+	titleel.on( 'click', jQuery.proxy( this.setupMap, this ) );
 }
+
+MapWidget.prototype.setupMap = function ( ) {
+
+	setTimeout( jQuery.proxy( function() {
+		if ( this.shown == true ) {
+			this.resizeMap();
+			return;
+		}
+		this.shown = true;
+		var mlat = this.latInput.val();
+		var mlong = this.longInput.val();
+		var zoom = this.getZoom();
+		var latlng = new google.maps.LatLng( mlat, mlong );
+		var mapOptions = {
+			center: latlng,
+			center: latlng,
+			zoom: Number( zoom ),
+			zoomControl: true,
+			panControl: false
+		};
+		this.map = new google.maps.Map( this.mapDiv.get(0), mapOptions );
+		var mmarker = true;
+		if ( mmarker == true ) {
+			var marker = new google.maps.Marker( {
+				position: latlng,
+				map: this.map
+			});
+			this.marker = marker;
+			google.maps.event.addListener( this.map, 'center_changed', jQuery.proxy( this.center_changed, this ) );
+			google.maps.event.addListener( this.map, 'dragend', jQuery.proxy( this.dragend, this ) );
+			google.maps.event.addListener( this.map, 'zoom_changed', jQuery.proxy( this.zoom_changed, this ) );
+		}
+
+	}, this ), 400 );
+
+}
+
 
 MapWidget.prototype.resizeMap = function ( event ) {
 	google.maps.event.trigger( this.map, 'resize' );
@@ -84,7 +105,7 @@ MapWidget.prototype.geocoder_changed = function ( event ) {
 			var func = jQuery.proxy( this.geocoder_results, this );
 			func( results, status );
 		} else {
-			console.log( search2 + ' != ' + search );
+			//console.log( search2 + ' != ' + search );
 		}
 	}, this ) );
 }
@@ -114,13 +135,14 @@ MapWidget.prototype.onGeoCoderResultClick = function ( event ) {
 	target = jQuery( target );
 	var lat = target.data( 'lat' );
 	var long = target.data( 'long' );
-	var pos = new google.maps.LatLng( lat, long );
-	this.setPosition( pos );
+
+	this.setPosition( lat, long );
 }
 
-MapWidget.prototype.setPosition = function ( position ) {
-	this.map.panTo( position );
+MapWidget.prototype.setPosition = function ( lat, long ) {
+	var position = new google.maps.LatLng( lat, long );
 	this.setMarkerPosition( position );
+	this.map.panTo( position );
 }
 
 MapWidget.prototype.setMarkerPosition = function ( position ) {
