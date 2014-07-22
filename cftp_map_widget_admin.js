@@ -43,6 +43,8 @@ function MapWidget( element ) {
 	this.geoInput = geoInput;
 	this.geoResults = geoResults;
 
+	this.idle = true;
+
 	geoInput.on( 'change', jQuery.proxy( this.geocoder_changed, this ) );
 	geoInput.on( 'keyup', jQuery.proxy( this.geocoder_changed, this ) );
 
@@ -56,6 +58,7 @@ MapWidget.prototype.setupMap = function ( ) {
 			this.resizeMap();
 			return;
 		}
+		this.idle = false;
 		this.shown = true;
 		var mlat = this.latInput.val();
 		var mlong = this.longInput.val();
@@ -63,8 +66,8 @@ MapWidget.prototype.setupMap = function ( ) {
 		var latlng = new google.maps.LatLng( mlat, mlong );
 		var mapOptions = {
 			center: latlng,
-			center: latlng,
 			zoom: Number( zoom ),
+			disableDefaultUI: true,
 			zoomControl: true,
 			panControl: false
 		};
@@ -77,6 +80,9 @@ MapWidget.prototype.setupMap = function ( ) {
 			});
 			this.marker = marker;
 			google.maps.event.addListener( this.map, 'center_changed', jQuery.proxy( this.center_changed, this ) );
+			google.maps.event.addListener( this.map, 'idle', jQuery.proxy( function () {
+				this.idle = true;
+			}, this ) );
 			google.maps.event.addListener( this.map, 'dragend', jQuery.proxy( this.dragend, this ) );
 			google.maps.event.addListener( this.map, 'zoom_changed', jQuery.proxy( this.zoom_changed, this ) );
 		}
@@ -130,6 +136,9 @@ MapWidget.prototype.processGeoCoderResult = function ( result ) {
 }
 
 MapWidget.prototype.onGeoCoderResultClick = function ( event ) {
+	if ( this.idle == false ) {
+		return;
+	}
 	var target = event.target || event.srcElement;
 	target = jQuery( target );
 	var lat = target.data( 'lat' );
@@ -139,11 +148,13 @@ MapWidget.prototype.onGeoCoderResultClick = function ( event ) {
 }
 
 MapWidget.prototype.setPosition = function ( lat, long ) {
+	this.idle = false;
 	var position = new google.maps.LatLng( lat, long );
 	this.marker.setMap( null );
 	this.setMarkerPosition( position );
-	this.map.setCenter( position );
+	this.map.panTo( position );
 	this.marker.setMap( this.map );
+	this.resizeMap();
 }
 
 MapWidget.prototype.setMarkerPosition = function ( position ) {
@@ -151,17 +162,26 @@ MapWidget.prototype.setMarkerPosition = function ( position ) {
 }
 
 MapWidget.prototype.center_changed = function () {
+	if ( this.idle == false ) {
+		return;
+	}
 	var center = this.map.getCenter();
 	this.latInput.val( center.lat() );
 	this.longInput.val( center.lng() );
 }
 
 MapWidget.prototype.dragend = function () {
+	if ( this.idle == false ) {
+		return;
+	}
 	var center = this.map.getCenter();
 	this.setMarkerPosition( center );
 }
 
 MapWidget.prototype.zoom_changed = function () {
+	if ( this.idle == false ) {
+		return;
+	}
 	var zoom = this.map.getZoom();
 	this.zoomInput.val( zoom );
 }
