@@ -1,7 +1,3 @@
-# CFTP Map Widget
+# Map Widget
 
-This plugin adds a widget that embeds a Google Map. You will need:
-
- - A google Maps API v3 browser API key ( insert into the provided settings page )
- - The latitude and longitude of the desired location
- - The numerical zoom value for the targeted location
+This plugin adds a widget that embeds a Google Map. Search for a location or position the map manually. Built by Code For The People and now an Automattic plugin
