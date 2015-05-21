@@ -128,7 +128,7 @@ MapWidget.prototype.geocoder_results = function ( results, status ) {
 
 MapWidget.prototype.processGeoCoderResult = function ( result ) {
 	var pos = result.geometry.location;
-	var el = jQuery( '<a>'+result.formatted_address+'</a>' );
+	var el = jQuery( '<a></a>').text( result.formatted_address );
 	el.data( 'lat', pos.lat() );
 	el.data( 'lng', pos.lng() );
 	el.click( jQuery.proxy( this.onGeoCoderResultClick, this ) );
